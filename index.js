@@ -6,7 +6,7 @@ var app = express();
 var ids = [];
 
 //GET on / will return server status
-app.get('/', function (req, res) {
+app.get("/", function (req, res) {
   var genericResp = "Server status: running<br>";
   genericResp += "Current date/time: " + (new Date()).toString() + "<br>";
   genericResp += "Hello world";
@@ -28,5 +28,5 @@ var server = app.listen(appPort, function () {
   var host = server.address().address;
   var port = server.address().port;
 
-  console.log('Example app listening at http://%s:%s', host, port);
+  console.log("Entrust metadata running");
 });
