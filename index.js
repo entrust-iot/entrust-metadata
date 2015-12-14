@@ -1,5 +1,5 @@
 var express = require("express");
-var uniqueId = require("libs/guid");
+var uniqueId = require("./libs/guid");
 
 var app = express();
 
