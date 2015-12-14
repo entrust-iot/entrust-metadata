@@ -1,4 +1,5 @@
 //Generates a GUID
+var crypto = require("crypto");
 
 function generateGUID() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
