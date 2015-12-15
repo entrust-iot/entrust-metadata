@@ -51,6 +51,8 @@ app.post("/meta", function(req, res) {
         "tenant_data": tenants["TENANT1"],
         "timestamp": (new Date()).getTime()
     };
+    console.log("Sending meta response");
+    console.log(sendData);
     res.json(sendData);
 });
 
