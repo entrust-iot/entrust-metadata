@@ -47,7 +47,11 @@ app.post("/meta", function(req, res) {
         'length': body.length,
         'topic': body.topic
     });
-    res.send(JSON.stringify({"tenant_data": tenants["TENANT1"]}));
+    var sendData = {
+        "tenant_data": tenants["TENANT1"],
+        "timestamp": (new Date()).getTime()
+    };
+    res.json(sendData);
 });
 
 var appPort = process.env.PORT || 5000;
