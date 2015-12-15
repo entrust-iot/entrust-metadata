@@ -10,7 +10,7 @@ var db = {
     requests: []
 };
 
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 //GET on / will return server status
 app.get("/", function (req, res) {
@@ -38,7 +38,7 @@ app.post("/meta", function(req, res) {
         'length': body.length,
         'topic': body.topic
     });
-    res.send(JSON.stringify({tenant_url: "http://blablabla"}));
+    res.send(JSON.stringify({"tenant_url": "http://blablabla"}));
 });
 
 var appPort = process.env.PORT || 5000;
