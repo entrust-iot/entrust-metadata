@@ -10,6 +10,15 @@ var db = {
     requests: []
 };
 
+var tenants = {
+    TENANT1: {
+        protocol: "http",
+        hostname: "boiling-reef-5375.herokuapp.com",
+        port: "80",
+        method: "POST"
+    }
+};
+
 app.use(bodyParser.json());
 
 //GET on / will return server status
@@ -38,7 +47,7 @@ app.post("/meta", function(req, res) {
         'length': body.length,
         'topic': body.topic
     });
-    res.send(JSON.stringify({"tenant_url": "http://blablabla"}));
+    res.send(JSON.stringify({"tenant_data": tenants["TENANT1"]}));
 });
 
 var appPort = process.env.PORT || 5000;
