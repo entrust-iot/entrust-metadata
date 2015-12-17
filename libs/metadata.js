@@ -17,4 +17,4 @@ var metadataCollection = function() {
     }
 };
 
-module.exports = metadataCollection();
+module.exports = new metadataCollection();

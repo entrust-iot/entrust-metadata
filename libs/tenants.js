@@ -34,4 +34,4 @@ var tenantsCollection = function() {
     }
 };
 
-module.exports = tenantsCollection();
+module.exports = new tenantsCollection();

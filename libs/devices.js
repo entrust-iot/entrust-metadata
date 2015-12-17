@@ -40,4 +40,4 @@ var devicesCollection = function() {
     }
 };
 
-module.exports = devicesCollection();
+module.exports = new devicesCollection();
