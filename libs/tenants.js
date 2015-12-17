@@ -1,4 +1,4 @@
-var fakeData = require("../tenants.json");
+var fakeData = require("../data/tenants.json");
 
 var data = [];
 
