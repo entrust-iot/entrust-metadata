@@ -37,6 +37,7 @@ app.post("/meta", function(req, res) {
     var tenant = splittedTopic[0];
     var deviceId = splittedTopic[1];
     var sensorId = splittedTopic[2];
+    console.log("Looking for tenant " + tenant);
 
     var tenantId = tenants.findTenantByKey(tenant);
 
