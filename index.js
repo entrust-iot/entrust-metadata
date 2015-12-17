@@ -1,58 +1,64 @@
 var express = require("express");
-var uniqueId = require("./libs/guid");
 var bodyParser = require("body-parser");
+var tenants = require("./libs/tenants");
+var devices = require("./libs/devices");
+var metadata = require("./libs/metadata");
 
 var app = express();
-
-var ids = [];
-
-var db = {
-    requests: []
-};
-
-var tenants = {
-    TENANT1: {
-        protocol: "http",
-        hostname: "boiling-reef-5375.herokuapp.com",
-        port: "80",
-        method: "POST"
-    }
-};
 
 app.use(bodyParser.json());
 
 //GET on / will return server status
 app.get("/", function (req, res) {
-  var genericResp = "Server status: running<br>";
-  genericResp += "Current date/time: " + (new Date()).toString() + "<br>";
-  genericResp += "Hello world";
-  res.send(genericResp);
+    console.log("Client request for server status on /");
+    var genericResp = "Server status: running<br>";
+    genericResp += "Current date/time: " + (new Date()).toString() + "<br>";
+    genericResp += "Hello world";
+    res.send(genericResp);
 });
 
 //GET on /init will return a unique id and tenant id
-app.get("/init", function (req, res) {
-  var data = {};
-  data.id = uniqueId(ids);
-  ids.push(data.id);
-  data.tenant = "TENANT1";
-  res.send(JSON.stringify(data));
+app.get("/init/:apikey/:uniqueid", function (req, res) {
+    console.log("Device is requesting a tenant id and device id")
+    var data = {};
+    data.tenant = tenants.findTenantByKey(req.params.apikey);
+    data.id = devices.getDeviceByMAC(req.params.uniqueid);
+    res.send(JSON.stringify(data));
 });
 
 //POST for the meta data that comes from the service gateway
 app.post("/meta", function(req, res) {
+    console.log("Recevied POST request to add metadata");
     var body = req.body;
-    //TODO Check for valid data (tenant, id, ...)
-    db.requests.push({
-        'type' : body.cmd,
-        'length': body.length,
-        'topic': body.topic
+    if (body.topic.subtr(0,1) === "/") {
+        body.topic.substr(1);
+    }
+    var splittedTopic = body.topic.split("/");
+    var tenant = splittedTopic[0];
+    var deviceId = splittedTopic[1];
+    var sensorId = splittedTopic[2];
+
+    if (tenants.findTenantByKey(tenant) === null || devices.getDeviceById(deviceId) || !sensorId) {
+        res.status(403).send("Topic should be '/{tenant_id}/{device_id}/{sensor_id}").end();
+    }
+
+    metadata.addRow({
+        "type" : body.cmd,
+        "length": body.length,
+        "topic": body.topic,
+        "tenant": tenant,
+        "deviceId": deviceId,
+        "sensorId": sensorId
     });
+
     var sendData = {
-        "tenant_data": tenants["TENANT1"],
+        "tenant_data": tenants.findTenantById(tenant).edh,
         "timestamp": (new Date()).getTime()
     };
+
     console.log("Sending meta response");
     console.log(sendData);
+
     res.json(sendData);
 });
 

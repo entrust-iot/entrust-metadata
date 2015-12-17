@@ -9,12 +9,15 @@ function generateGUID() {
 }
 
 function generateUniqueGUID(listOfIds) {
-  var uniqueId = generateGUID();
-  if (listOfIds.indexOf(uniqueId) > -1) {
-    return generateUniqueGUID();
-  } else {
-    return uniqueId;
-  }
+    if (listOfIds === undefined) {
+        listOfIds = [];
+    }
+    var uniqueId = generateGUID();
+    if (listOfIds.indexOf(uniqueId) > -1) {
+        return generateUniqueGUID();
+    } else {
+        return uniqueId;
+    }
 }
 
 module.exports = generateUniqueGUID;
