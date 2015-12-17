@@ -42,6 +42,7 @@ app.post("/meta", function(req, res) {
 
     if (tenantId === null || devices.getDeviceById(deviceId) || !sensorId) {
         res.status(403).send("Topic should be '/{tenant_id}/{device_id}/{sensor_id}").end();
+        return;
     }
 
     metadata.addRow({
