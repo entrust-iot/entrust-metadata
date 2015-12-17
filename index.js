@@ -33,6 +33,7 @@ app.post("/meta", function(req, res) {
     if (body.topic.substr(0,1) === "/") {
         body.topic.substr(1);
     }
+    console.log("Analyzing topic " + body.topic);
     var splittedTopic = body.topic.split("/");
     var tenant = splittedTopic[0];
     var deviceId = splittedTopic[1];
