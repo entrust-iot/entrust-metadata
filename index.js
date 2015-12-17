@@ -38,7 +38,7 @@ app.post("/meta", function(req, res) {
     var deviceId = splittedTopic[1];
     var sensorId = splittedTopic[2];
 
-    var tenantId = tenants.findTenantByKey(tenant)
+    var tenantId = tenants.findTenantByKey(tenant);
 
     if (tenantId === null || devices.getDeviceById(deviceId) || !sensorId) {
         res.status(403).send("Topic should be '/{tenant_id}/{device_id}/{sensor_id}").end();
@@ -54,7 +54,7 @@ app.post("/meta", function(req, res) {
     });
 
     var sendData = {
-        "tenant_data": tenantId.edh,
+        "tenant_data": tenantId ? tenantId.edh : "",
         "timestamp": (new Date()).getTime()
     };
 
