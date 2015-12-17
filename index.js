@@ -30,7 +30,7 @@ app.get("/init/:apikey/:uniqueid", function (req, res) {
 app.post("/meta", function(req, res) {
     console.log("Recevied POST request to add metadata");
     var body = req.body;
-    if (body.topic.subtr(0,1) === "/") {
+    if (body.topic.substr(0,1) === "/") {
         body.topic.substr(1);
     }
     var splittedTopic = body.topic.split("/");
