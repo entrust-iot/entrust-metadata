@@ -31,7 +31,7 @@ app.post("/meta", function(req, res) {
     console.log("Recevied POST request to add metadata");
     var body = req.body;
     if (body.topic.substr(0,1) === "/") {
-        body.topic.substr(1);
+        bdy.topic = body.topic.substr(1);
     }
     console.log("Analyzing topic " + body.topic);
     var splittedTopic = body.topic.split("/");
