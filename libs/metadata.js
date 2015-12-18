@@ -28,28 +28,26 @@ var metadataCollection = function() {
     this.aggregateData = function() {
         var agg = {};
         for (var i = 0; i < data.length; i++) {
-            if (tenantId === undefined || data[i].tenant === tenantId) {
-                if (!agg[data[i].tenant]) {
-                    agg[data[i].tenant] = {total: 0, number: 0, devices: {}};
-                }
-
-                agg[data[i].tenant].total += parseInt(data[i]["length"]);
-                agg[data[i].tenant].number++;
-
-                if (!agg[data[i].tenant].devices[data[i].deviceId]) {
-                    agg[data[i].tenant].devices[data[i].deviceId] = {total: 0, number: 0, sensors: {}};
-                }
-
-                agg[data[i].tenant].devices[data[i].deviceId].total += parseInt(data[i]["length"]);
-                agg[data[i].tenant].devices[data[i].deviceId].number++;
-
-                if (!agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId]) {
-                    agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId] = {total: 0, number: 0};
-                }
-
-                agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId].total += parseInt(data[i]["length"]);
-                agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId].number++;
+            if (!agg[data[i].tenant]) {
+                agg[data[i].tenant] = {total: 0, number: 0, devices: {}};
             }
+
+            agg[data[i].tenant].total += parseInt(data[i]["length"]);
+            agg[data[i].tenant].number++;
+
+            if (!agg[data[i].tenant].devices[data[i].deviceId]) {
+                agg[data[i].tenant].devices[data[i].deviceId] = {total: 0, number: 0, sensors: {}};
+            }
+
+            agg[data[i].tenant].devices[data[i].deviceId].total += parseInt(data[i]["length"]);
+            agg[data[i].tenant].devices[data[i].deviceId].number++;
+
+            if (!agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId]) {
+                agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId] = {total: 0, number: 0};
+            }
+
+            agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId].total += parseInt(data[i]["length"]);
+            agg[data[i].tenant].devices[data[i].deviceId].sensors[data[i].sensorId].number++;
         }
 
         return agg;
