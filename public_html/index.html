@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Entrust metadata server</title>
+
+    <!-- Bootstrap -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+
+        .sensor {
+            background-color: #eeeeee;
+        }
+        .device {
+            background-color: #cccccc;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Entrust Metadata server</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+
+        </div><!--/.navbar-collapse -->
+    </div>
+</nav>
+
+<!-- Main jumbotron for a primary marketing message or call to action -->
+<div class="jumbotron">
+    <div class="container">
+        <h1>Metadata Details</h1>
+        <p>This is the data that is currently stored in your metadata server.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <td>Identifier</td>
+                <td>Total data (bytes)</td>
+                <td>Number of messages</td>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+
+    <footer>
+        <p>&copy; 2015 Entrust</p>
+    </footer>
+</div> <!-- /container -->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+//Fetch data from the metadata server
+$.get("/metadata").success(function(resp) {
+    for (var i = 0; i < resp.length; i++) {
+        var tenant = resp[i];
+        $("<tr>")
+            .addClass("tenant")
+            .append(
+                $("<td>").text(tenant.name)
+            ).append(
+                $("<td>").text(tenant.total)
+            ).append(
+                $("<td>").text(tenant.number)
+            ).on("click", function() {
+                addTenantDetails(this, $(this).find("td").first().text());
+            }).appendTo(
+                $("tbody")
+            );
+    }
+});
+
+function addTenantDetails(row, tenantId) {
+    if ($(row).hasClass("expanded")) {
+        return;
+    }
+
+    $(row).addClass("expanded");
+
+    $.get("/metadata/" + tenantId).success(function(resp) {
+        for (var i = 0; i < resp.length; i++) {
+            var device = resp[i];
+            $("<tr>")
+                .addClass("device")
+                .append(
+                    $("<td>").text(device.name)
+                ).append(
+                    $("<td>").text(device.total)
+                ).append(
+                    $("<td>").text(device.number)
+                ).on("click", function() {
+                    addDeviceDetails(this, tenantId, $(this).find("td").first().text());
+                }).insertAfter(
+                    $(row)
+                );
+        }
+    });
+}
+
+function addDeviceDetails(row, tenantId, deviceId) {
+    if ($(row).hasClass("expanded")) {
+        return;
+    }
+
+    $(row).addClass("expanded");
+
+    $.get("/metadata/" + tenantId + "/" + deviceId).success(function(resp) {
+        for (var i = 0; i < resp.length; i++) {
+            var sensor = resp[i];
+            $("<tr>")
+                .addClass("sensor")
+                .append(
+                    $("<td>").text(sensor.name)
+                ).append(
+                    $("<td>").text(sensor.total)
+                ).append(
+                    $("<td>").text(sensor.number)
+                ).insertAfter(
+                    $(row)
+                );
+        }
+    });
+}
+</script>
+</body>
+</html>

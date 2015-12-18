@@ -8,8 +8,8 @@ var app = express();
 
 app.use(bodyParser.json());
 
-//GET on / will return server status
-app.get("/", function (req, res) {
+//GET on /status will return server status
+app.get("/status", function (req, res) {
     console.log("Client request for server status on /");
     var genericResp = "Server status: running<br>";
     genericResp += "Current date/time: " + (new Date()).toString() + "<br>";
@@ -26,6 +26,21 @@ app.get("/init/:apikey/:uniqueid", function (req, res) {
     res.send(JSON.stringify(data));
 });
 
+//GET to return all the metadata by tenants
+app.get("/metadata", function(req, res) {
+    res.json(metadata.getMetadata());
+});
+
+//GET to return all the metadata for a specific tenant
+app.get("/metadata/:tenantId", function(req, res) {
+    res.json(metadata.getMetadataByTenant(req.params.tenantId));
+});
+
+//GET to return all the metadata for a specific device
+app.get("/metadata/:tenantId/:deviceId", function(req, res) {
+    res.json(metadata.getMetadataByDevice(req.params.tenantId, req.params.deviceId));
+});
+
 //POST for the meta data that comes from the service gateway
 app.post("/meta", function(req, res) {
     console.log("Recevied POST request to add metadata");
@@ -38,7 +53,6 @@ app.post("/meta", function(req, res) {
     var tenant = splittedTopic[0];
     var deviceId = splittedTopic[1];
     var sensorId = splittedTopic[2];
-    console.log("Looking for tenant " + tenant);
 
     var tenantId = tenants.findTenantByKey(tenant);
 
@@ -66,6 +80,9 @@ app.post("/meta", function(req, res) {
 
     res.json(sendData);
 });
+
+//Add a static server for files under the public_html folder
+app.use(express.static(__dirname + "/public_html"));
 
 var appPort = process.env.PORT || 5000;
 
