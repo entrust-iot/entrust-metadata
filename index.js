@@ -21,7 +21,7 @@ app.get("/status", function (req, res) {
 app.get("/init/:apikey/:uniqueid", function (req, res) {
     console.log("Device is requesting a tenant id and device id");
     var data = {};
-    data.tenant = tenants.findTenantByKey(req.params.apikey);
+    data.tenant = tenants.findTenantByKey(req.params.apikey).id;
     data.id = devices.getDeviceByMAC(req.params.uniqueid).id;
     res.send(JSON.stringify(data));
 });
