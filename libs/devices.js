@@ -23,6 +23,7 @@ var devicesCollection = function() {
                 id: uniqueId(),
                 MACAdd: mac
             };
+            data.push(device);
         }
 
         return device;
