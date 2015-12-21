@@ -32,6 +32,17 @@ var tenantsCollection = function() {
         }
         return tenant;
     }
+
+    this.findTenantById = function(key) {
+        var tenant = null;
+        for (var i = 0; i < data.length; i++) {
+            if (data[i].id === key) {
+                tenant = data[i];
+                break;
+            }
+        }
+        return tenant;
+    }
 };
 
 module.exports = new tenantsCollection();
