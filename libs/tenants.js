@@ -23,10 +23,9 @@ var tenantsCollection = function() {
     };
 
     this.findTenantByKey = function(key) {
-        console.log ("Looking for " + key);
         var tenant = null;
         for (var i = 0; i < data.length; i++) {
-            if (data[i].id === key) {
+            if (data[i].key === key) {
                 tenant = data[i];
                 break;
             }
