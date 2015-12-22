@@ -13,7 +13,12 @@
   {
     "id": "TENANT2",
     "name": "Tenant 2",
-    "edh": {},
+    "edh": {
+      "protocol": "http",
+      "hostname": "immense-peak-8291.herokuapp.com",
+      "port": "80",
+      "method": "POST"	
+	},
     "key": "234"
   }
 ]
