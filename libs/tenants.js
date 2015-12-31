@@ -43,6 +43,14 @@ var tenantsCollection = function() {
         }
         return tenant;
     }
+	
+	this.addTenant = function(tenant) {
+		if(tenant.id && tenant.name && tenant.edh && tenant.key) {
+			data.push(tenant);
+			return {"result":"success"};
+		}
+		return {"result":"fail"};
+	}
 };
 
 module.exports = new tenantsCollection();
