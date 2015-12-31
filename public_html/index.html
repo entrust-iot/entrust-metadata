@@ -72,7 +72,10 @@
     </div>
 
     <hr>
-
+    Add Tenant:<br>
+	
+	<form action="newtenant" method="post" id="tenant-form">
+	<input type="text" name="tenant" size = "150"> <br> <br>
     <footer>
         <p>&copy; 2015 Entrust</p>
     </footer>
@@ -84,6 +87,32 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
 <script type="text/javascript">
+
+function submitTenantForm(e) {
+  // stop the regular form submission
+  e.preventDefault();
+
+  // construct an HTTP request
+  var xhr = new XMLHttpRequest();
+  xhr.open(form.method, form.action, true);
+  xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+
+  // send the collected data as JSON
+  xhr.send(form.tenant.value);
+
+  xhr.onloadend = function () {
+    window.location.href = "tenants";
+    // done
+  };
+};
+
+var form = document.getElementById('tenant-form');
+if (form.attachEvent) {
+    form.attachEvent("submit", submitTenantForm);
+} else {
+    form.addEventListener("submit", submitTenantForm);
+}
+
 //Fetch data from the metadata server
 $.get("/metadata").success(function(resp) {
     for (var i = 0; i < resp.length; i++) {
