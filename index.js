@@ -41,6 +41,18 @@ app.get("/metadata/:tenantId/:deviceId", function(req, res) {
     res.json(metadata.getMetadataByDevice(req.params.tenantId, req.params.deviceId));
 });
 
+app.get("/tenants", function(req, res) {
+	res.json(tenants.getAll());
+});
+
+app.post("/newtenant", function(req, res) {
+	console.log("Recieved POST request to add tenant: " + req.body);
+	var err = tenants.addTenant(req.body);
+	console.log(err);
+	res.json(err);
+})
+
+
 //POST for the meta data that comes from the service gateway
 app.post("/meta", function(req, res) {
     console.log("Recevied POST request to add metadata");
