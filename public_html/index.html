@@ -10,23 +10,15 @@
     <!-- Bootstrap -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-    <style>
-
-        .sensor {
-            background-color: #eeeeee;
-        }
-        .device {
-            background-color: #cccccc;
-        }
-
-    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="index.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -46,7 +38,6 @@
     </div>
 </nav>
 
-<!-- Main jumbotron for a primary marketing message or call to action -->
 <div class="jumbotron">
     <div class="container">
         <h1>Metadata Details</h1>
@@ -80,110 +71,5 @@
         <p>&copy; 2015 Entrust</p>
     </footer>
 </div> <!-- /container -->
-
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<!-- Include all compiled plugins (below), or include individual files as needed -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-
-<script type="text/javascript">
-
-function submitTenantForm(e) {
-  // stop the regular form submission
-  e.preventDefault();
-
-  // construct an HTTP request
-  var xhr = new XMLHttpRequest();
-  xhr.open(form.method, form.action, true);
-  xhr.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-
-  // send the collected data as JSON
-  xhr.send(form.tenant.value);
-
-  xhr.onloadend = function () {
-    window.location.href = "tenants";
-    // done
-  };
-};
-
-var form = document.getElementById('tenant-form');
-if (form.attachEvent) {
-    form.attachEvent("submit", submitTenantForm);
-} else {
-    form.addEventListener("submit", submitTenantForm);
-}
-
-//Fetch data from the metadata server
-$.get("/metadata").success(function(resp) {
-    for (var i = 0; i < resp.length; i++) {
-        var tenant = resp[i];
-        $("<tr>")
-            .addClass("tenant")
-            .append(
-                $("<td>").text(tenant.name)
-            ).append(
-                $("<td>").text(tenant.total)
-            ).append(
-                $("<td>").text(tenant.number)
-            ).on("click", function() {
-                addTenantDetails(this, $(this).find("td").first().text());
-            }).appendTo(
-                $("tbody")
-            );
-    }
-});
-
-function addTenantDetails(row, tenantId) {
-    if ($(row).hasClass("expanded")) {
-        return;
-    }
-
-    $(row).addClass("expanded");
-
-    $.get("/metadata/" + tenantId).success(function(resp) {
-        for (var i = 0; i < resp.length; i++) {
-            var device = resp[i];
-            $("<tr>")
-                .addClass("device")
-                .append(
-                    $("<td>").text(device.name)
-                ).append(
-                    $("<td>").text(device.total)
-                ).append(
-                    $("<td>").text(device.number)
-                ).on("click", function() {
-                    addDeviceDetails(this, tenantId, $(this).find("td").first().text());
-                }).insertAfter(
-                    $(row)
-                );
-        }
-    });
-}
-
-function addDeviceDetails(row, tenantId, deviceId) {
-    if ($(row).hasClass("expanded")) {
-        return;
-    }
-
-    $(row).addClass("expanded");
-
-    $.get("/metadata/" + tenantId + "/" + deviceId).success(function(resp) {
-        for (var i = 0; i < resp.length; i++) {
-            var sensor = resp[i];
-            $("<tr>")
-                .addClass("sensor")
-                .append(
-                    $("<td>").text(sensor.name)
-                ).append(
-                    $("<td>").text(sensor.total)
-                ).append(
-                    $("<td>").text(sensor.number)
-                ).insertAfter(
-                    $(row)
-                );
-        }
-    });
-}
-</script>
 </body>
 </html>
