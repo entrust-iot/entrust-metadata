@@ -4,10 +4,12 @@
   "description": "A first POC for the entrust metadata server",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "postinstall": "./node_modules/bower/bin/bower install"
   },
   "dependencies": {
     "body-parser": "^1.14.1",
+    "bower": "^1.7.7",
     "crypto": "0.0.3",
     "express": "^4.13.3"
   },
@@ -16,11 +18,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/paxl13/entrust-metadata"
+    "url": "https://github.com/entrust-iot/entrust-metadata"
   },
   "keywords": [
     "node",
     "heroku"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.9.0"
+  }
 }
