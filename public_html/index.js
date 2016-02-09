@@ -1,4 +1,15 @@
 $(function() {
+  function MainVM() {
+    var self = this;
+
+    self.test = ko.observable('world');
+  }
+
+  ko.applyBindings(new MainVM());
+})();
+
+
+$(function() {
   var form = document.getElementById('tenant-form');
   if (form.attachEvent) {
       form.attachEvent("submit", submitTenantForm);
