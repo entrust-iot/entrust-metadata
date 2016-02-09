@@ -12,14 +12,12 @@
     <link rel="stylesheet" type="text/css" href="index.css">
 
     <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/lodash/dist/lodash.min.js"></script>
     <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/knockout/dist/knockout.js"></script>
     <script src="index.js"></script>
 </head>
 <body>
-
-<h1 data-bind="text: test"></h1>
-
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -62,13 +60,25 @@
     </div>
 
     <hr>
-    Add Tenant:<br>
-	
-	<form action="newtenant" method="post" id="tenant-form">
-	<input type="text" name="tenant" size = "150"> <br> <br>
-    <footer>
-        <p>&copy; 2015 Entrust</p>
-    </footer>
 </div> <!-- /container -->
+
+<div class="container">
+  <button data-bind="click: addTenant">add new</button>
+  <div data-bind="foreach: tenantsData">
+    <button data-bind="click: function(d, e) { $root.removeTenant($index()) }">remove</button>
+    id: <input type="text" data-bind="textInput: id" /><br />
+    name: <input type="text" data-bind="textInput: name" /><br />
+    key: <input type="text" data-bind="textInput: key" /><br />
+    edh: <br />
+    protocol: <input type="text" data-bind="textInput: edh.protocol" /><br />
+    hostname: <input type="text" data-bind="textInput: edh.hostname" /><br />
+    port: <input type="text" data-bind="textInput: edh.port" /><br />
+    method: <input type="text" data-bind="textInput: edh.method" /><br />
+  </div>
+  <button data-bind="click: saveTenant">save</button>
+</div>
+<footer>
+    <p>&copy; 2015 Entrust</p>
+</footer>
 </body>
 </html>

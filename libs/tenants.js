@@ -51,6 +51,11 @@ var tenantsCollection = function() {
 		}
 		return {"result":"fail"};
 	}
+
+  this.replaceData = function(tenants) {
+    data.length = 0;
+    data = tenants;
+  }
 };
 
 module.exports = new tenantsCollection();

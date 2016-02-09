@@ -1,12 +1,58 @@
 $(function() {
   function MainVM() {
     var self = this;
+    self.tenantsData = ko.observableArray();
 
-    self.test = ko.observable('world');
+    self.addTenant = addTenant;
+    self.removeTenant = removeTenant;
+    self.saveTenant = saveTenant;
+
+    function addTenant() {
+      self.tenantsData.push({
+        "id": "",
+        "name": "",
+        "edh": {
+          "protocol": "",
+          "hostname": "",
+          "port": "",
+          "method": ""
+        },
+        "key": ""
+      });
+    }
+     
+    function removeTenant(index) {
+      self.tenantsData.splice(index, 1);
+    }
+
+    function saveTenant() {
+      var options = {
+        url: '/tenants',
+        type: 'POST',
+        data: JSON.stringify(self.tenantsData()),
+        contentType: 'application/json; charset=utf-8',
+        dataType: 'json',
+        success: function() {
+          console.log('success');
+        }
+      }
+
+      $.ajax(options)
+    }
+
+    function init() {
+      $.getJSON('/tenants', function(data) {
+        _.each(data, function (v) {
+          self.tenantsData.push(v);
+        });
+      });
+    }
+
+    init();
   }
 
   ko.applyBindings(new MainVM());
-})();
+});
 
 
 $(function() {

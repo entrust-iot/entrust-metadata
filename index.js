@@ -55,11 +55,13 @@ app.get("/tenants", function(req, res) {
 	res.json(tenants.getAll());
 });
 
-app.post("/newtenant", function(req, res) {
-	console.log("Recieved POST request to add tenant: " + req.body);
-	var err = tenants.addTenant(req.body);
-	console.log(err);
-	res.json(err);
+app.post("/tenants", function(req, res) {
+  var data = req.body
+	console.log("Recieved POST request to add tenant: " + JSON.stringify(data));
+
+  tenants.replaceData(data);
+
+	res.json({"hello":"world"});
 })
 
 
