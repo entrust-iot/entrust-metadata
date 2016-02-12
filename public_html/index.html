@@ -47,14 +47,18 @@
     <div class="row">
         <table class="table table-hover">
             <thead>
-            <tr>
-                <td>Identifier</td>
-                <td>Total data (bytes)</td>
-                <td>Number of messages</td>
-            </tr>
+              <tr>
+                  <td>Identifier</td>
+                  <td>Total data (bytes) </td>
+                  <td>Number of messages</td>
+              </tr>
             </thead>
-            <tbody>
-
+            <tbody data-bind="foreach: metadataData">
+              <tr class="tenant expanded">
+                <td data-bind="text: name"></td>
+                <td data-bind="text: total"></td>
+                <td data-bind="text: number"></td>
+              </tr>
             </tbody>
         </table>
     </div>
@@ -62,20 +66,70 @@
     <hr>
 </div> <!-- /container -->
 
-<div class="panel">
-  <button data-bind="click: addTenant">add new</button>
-  <div data-bind="foreach: tenantsData">
-    <button data-bind="click: function(d, e) { $root.removeTenant($index()) }">remove</button>
-    id: <input type="text" data-bind="textInput: id" /><br />
-    name: <input type="text" data-bind="textInput: name" /><br />
-    key: <input type="text" data-bind="textInput: key" /><br />
-    edh: <br />
-    protocol: <input type="text" data-bind="textInput: edh.protocol" /><br />
-    hostname: <input type="text" data-bind="textInput: edh.hostname" /><br />
-    port: <input type="text" data-bind="textInput: edh.port" /><br />
-    method: <input type="text" data-bind="textInput: edh.method" /><br />
+<div class="panel panel-default tenantContainer">
+  <div class="panel-heading">
+    <button class="btn btn-default" data-bind="click: addTenant">
+      <span class="glyphicon glyphicon-plus"></span>
+    </button>
+    Tenants info
+    <button data-bind="click: saveTenant">save</button>
   </div>
-  <button data-bind="click: saveTenant">save</button>
+  <div class="panel-data">
+    <div class="tenantContainer" data-bind="foreach: tenantsData">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <button class="btn btn-default" data-bind="click: function(d, e) { $root.removeTenant($index()) }">
+            <span class="red glyphicon glyphicon-remove"></span>
+          </button>
+          <span>
+            Tenant <span data-bind="text: $index"></span>
+          </span>
+        </div>
+        <div class="panel-body">
+          <div class="input-group">
+            <span class="input-group-addon" id="input-id">id</span>
+            <input type="text" class="form-control" placeholder="id" data-bind="textInput: id" aria-describedby="input-id">
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon" id="input-name">name</span>
+            <input type="text" class="form-control" placeholder="name" data-bind="textInput: name" aria-describedby="input-name">
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon" id="input-key">key</span>
+            <input type="text" class="form-control" placeholder="key" data-bind="textInput: key" aria-describedby="input-key">
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Enterprise Data Hub information
+            </div>
+            <div class="panel-data tenantContainer" data-bind="with: edh">
+              <div class="input-group">
+                <span class="input-group-addon" id="input-protocol">protocol</span>
+                <input type="text" class="form-control" placeholder="protocol" data-bind="textInput: protocol" aria-describedby="input-protocol">
+              </div>
+
+              <div class="input-group">
+                <span class="input-group-addon" id="input-hostname">hostname</span>
+                <input type="text" class="form-control" placeholder="hostname" data-bind="textInput: hostname" aria-describedby="input-hostname">
+              </div>
+
+              <div class="input-group">
+                <span class="input-group-addon" id="input-port">port</span>
+                <input type="text" class="form-control" placeholder="port" data-bind="textInput: port" aria-describedby="input-port">
+              </div>
+
+              <div class="input-group">
+                <span class="input-group-addon" id="input-method">method</span>
+                <input type="text" class="form-control" placeholder="method" data-bind="textInput: method" aria-describedby="input-method">
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 <footer>
     <p>&copy; 2015 Entrust</p>

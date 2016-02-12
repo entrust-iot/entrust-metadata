@@ -4,3 +4,15 @@
 .device {
  background-color: #cccccc;
 }
+
+.tenantContainer {
+  margin: 20px;
+}
+
+.red {
+  color: red;
+}
+
+.input-group {
+  margin-bottom: 10px;
+}
