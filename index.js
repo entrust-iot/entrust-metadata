@@ -7,6 +7,16 @@ var metadata = require("./libs/metadata");
 var app = express();
 
 app.use(bodyParser.json());
+// Redirect all http requests to https, x-forwarded-proto is provided
+// by Heroku routing
+app.use(function(req, res, next) {
+    // if running locally don't redirect to ssl
+    if (process.env.LOCAL) {
+        return next();
+    }
+    var reqType = req.headers["x-forwarded-proto"];
+    reqType == 'https' ? next() : res.redirect("https://" + req.headers.host + req.url);
+});
 
 //GET on /status will return server status
 app.get("/status", function (req, res) {

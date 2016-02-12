@@ -3,9 +3,9 @@
     "id": "TENANT1",
     "name": "Tenant 1",
     "edh": {
-      "protocol": "http",
+      "protocol": "https",
       "hostname": "boiling-reef-5375.herokuapp.com",
-      "port": "80",
+      "port": "443",
       "method": "POST"
     },
     "key": "123"
@@ -14,9 +14,9 @@
     "id": "TENANT2",
     "name": "Tenant 2",
     "edh": {
-      "protocol": "http",
+      "protocol": "https",
       "hostname": "immense-peak-8291.herokuapp.com",
-      "port": "80",
+      "port": "443",
       "method": "POST"	
     },
     "key": "234"
