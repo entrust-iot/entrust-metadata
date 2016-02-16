@@ -1,44 +1,68 @@
 var uniqueId = require("./guid");
+var _ = require('lodash');
 
 var data = [];
 
 //Device definition
 //{
 //    "id": uniqueGuidLikeIdentifier,
-//    "MACAdd": "MAC Address"
+//    "macAddr": "MAC Address"
+//    "status": "online"
 //}
 
-var devicesCollection = function() {
-    this.getDeviceByMAC = function(mac) {
-        var device = null;
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].MACAdd === mac) {
-                device = data[i];
-                break;
-            }
-        }
-        //If no matching MAC Address were found, generate a new id
-        if (device === null) {
-            device = {
-                id: uniqueId(),
-                MACAdd: mac
-            };
-            data.push(device);
-        }
+var DevicesCollection = function() {
+  var self = this;
 
-        return device;
-    };
-    this.getDeviceById = function(id) {
-        var device = null;
-        for (var i = 0; i < data.length; i++) {
-            if (data[i].id === id) {
-                device = data[i];
-                break;
-            }
-        }
+  self.getDevices = getDevices;
+  self.getDeviceByMAC = getDeviceByMAC;
+  self.getDeviceByTenant = getDeviceByTenant
+  self.getDeviceById = getDeviceById;
 
-        return device;
+  function getDeviceByMAC(tenantId, mac, agentId) {
+    var device = _.find(data, { macAddr: mac });
+
+    if (!device) {
+      device = new Device(tenantId, mac, agentId);
+      data.push(device);
     }
+
+    return device;
+  };
+
+  function getDevices() {
+    return data;
+  }
+
+  function getDeviceByTenant(tenantId) {
+    return _(data)
+           .filter({tenant: tenantId})
+           .map('id')
+           .value();
+  }
+
+  function getDeviceById(id) {
+    return _.find(data, function(i) {
+      return (i.id === id ||
+              i.agentId == id);
+    });
+  }
+
+//    var device = _.find(data, {id: id});
+//    if (device) {
+//      return device;
+//    }
+//
+//    return _.find(data, {agentId: id});
+
+  function Device(t, m, i) {
+    var self = this;
+
+    self.macAddr = m;
+    self.tenant = t;
+    self.id = uniqueId();
+    self.agentId = i;
+    self.status = 'online';
+  }
 };
 
-module.exports = new devicesCollection();
+module.exports = new DevicesCollection();

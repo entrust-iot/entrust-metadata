@@ -28,11 +28,33 @@ app.get("/status", function (req, res) {
 });
 
 //GET on /init will return a unique id and tenant id
-app.get("/init/:apikey/:uniqueid", function (req, res) {
+app.get("/init/:apikey/:uniqueid/:agentId?", function (req, res) {
     console.log("Device is requesting a tenant id and device id");
     var data = {};
     data.tenant = tenants.findTenantByKey(req.params.apikey).id;
-    data.id = devices.getDeviceByMAC(req.params.uniqueid).id;
+    var device = devices.getDeviceByMAC(data.tenant, req.params.uniqueid, req.params.agentId);
+    device.status = 'online';
+    data.id = device.id;
+
+    res.send(JSON.stringify(data));
+});
+
+app.get("/devices", function (req, res) {
+    var data = devices.getDevices();
+    res.send(JSON.stringify(data));
+});
+
+app.get("/devices/:deviceId", function (req, res) {
+    var data = devices.getDeviceById(req.params.deviceId);
+    res.send(JSON.stringify(data));
+});
+
+app.put("/devices/:deviceId", function (req, res) {
+    var status = req.body.status;
+
+    var data = devices.getDeviceById(req.params.deviceId);
+    data.status = status;
+
     res.send(JSON.stringify(data));
 });
 
