@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 var tenants = require("./libs/tenants");
 var devices = require("./libs/devices");
 var metadata = require("./libs/metadata");
+var _ = require('lodash');
 
 var app = express();
 
@@ -28,12 +29,14 @@ app.get("/status", function (req, res) {
 });
 
 //GET on /init will return a unique id and tenant id
-app.get("/init/:apikey/:uniqueid/:agentId?", function (req, res) {
+app.get("/init/:apikey/:uniqueid/:agentId?/:edgeId?", function (req, res) {
     console.log("Device is requesting a tenant id and device id");
     var data = {};
     data.tenant = tenants.findTenantByKey(req.params.apikey).id;
-    var device = devices.getDeviceByMAC(data.tenant, req.params.uniqueid, req.params.agentId);
+    var device = devices.getDeviceByMAC(data.tenant, req.params.uniqueid, req.params.agentId, req.params.edgeId);
+
     device.status = 'online';
+
     data.id = device.id;
 
     res.send(JSON.stringify(data));
@@ -49,6 +52,8 @@ app.get("/devices/:deviceId", function (req, res) {
     res.send(JSON.stringify(data));
 });
 
+
+
 app.put("/devices/:deviceId", function (req, res) {
     var status = req.body.status;
 
@@ -56,6 +61,27 @@ app.put("/devices/:deviceId", function (req, res) {
     data.status = status;
 
     res.send(JSON.stringify(data));
+});
+
+//app.get("/edges", function (req, res) {
+//    var data = devices.getEdges();
+//    res.send(JSON.stringify(data));
+//});
+//
+//app.get("/edges/:edgeId", function (req, res) {
+//    var data = devices.getEdgeById(req.params.edgeId);
+//    res.send(JSON.stringify(data));
+//});
+
+app.put("/edges/:edgeId", function (req, res) {
+    var devicesList = devices.getDevicesByEdgeId(req.params.edgeId);
+    var status = req.body.status;
+
+    _.each(devicesList, function(device) {
+      device.status = status;
+    });
+
+    res.send(JSON.stringify(devicesList));
 });
 
 //GET to return all the metadata by tenants
@@ -102,6 +128,9 @@ app.post("/meta", function(req, res) {
 
     var tenantId = tenants.findTenantById(tenant);
     console.log(tenantId);
+
+    var device = devices.getDeviceById(deviceId);
+    device.status = 'online';
 
     if (tenantId === null || !sensorId) {
         res.status(403).send("Topic should be '/{tenant_id}/{device_id}/{sensor_id}").end();

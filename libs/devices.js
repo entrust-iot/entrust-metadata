@@ -15,16 +15,20 @@ var DevicesCollection = function() {
 
   self.getDevices = getDevices;
   self.getDeviceByMAC = getDeviceByMAC;
-  self.getDeviceByTenant = getDeviceByTenant
+  self.getDevicesIdByTenant = getDevicesIdByTenant
   self.getDeviceById = getDeviceById;
+  self.getDevicesByEdgeId = getDevicesByEdgeId;
 
-  function getDeviceByMAC(tenantId, mac, agentId) {
+  function getDeviceByMAC(tenantId, mac, agentId, edgeId) {
     var device = _.find(data, { macAddr: mac });
 
     if (!device) {
-      device = new Device(tenantId, mac, agentId);
+      device = new Device(tenantId, mac, agentId, edgeId);
       data.push(device);
     }
+
+    device.agentId = agentId;
+    device.edgeId = edgeId;
 
     return device;
   };
@@ -33,7 +37,7 @@ var DevicesCollection = function() {
     return data;
   }
 
-  function getDeviceByTenant(tenantId) {
+  function getDevicesIdByTenant(tenantId) {
     return _(data)
            .filter({tenant: tenantId})
            .map('id')
@@ -47,20 +51,18 @@ var DevicesCollection = function() {
     });
   }
 
-//    var device = _.find(data, {id: id});
-//    if (device) {
-//      return device;
-//    }
-//
-//    return _.find(data, {agentId: id});
+  function getDevicesByEdgeId(edgeId) {
+    return _.filter(data, {edgeId: edgeId});
+  }
 
-  function Device(t, m, i) {
+  function Device(t, m, i, e) {
     var self = this;
 
     self.macAddr = m;
     self.tenant = t;
     self.id = uniqueId();
     self.agentId = i;
+    self.edgeId = e;
     self.status = 'online';
   }
 };
