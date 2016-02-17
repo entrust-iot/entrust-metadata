@@ -1,138 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>Entrust metadata server</title>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Bootstrap -->
-    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="index.css">
 
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/lodash/dist/lodash.min.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/knockout/dist/knockout.js"></script>
-    <script src="index.js"></script>
-</head>
-<body>
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Entrust Metadata server</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-
-        </div><!--/.navbar-collapse -->
-    </div>
-</nav>
-
-<div class="jumbotron">
-    <div class="container">
-        <h1>Metadata Details</h1>
-        <p>This is the data that is currently stored in your metadata server.</p>
-    </div>
-</div>
-
-<div class="container">
-    <!-- Example row of columns -->
-    <div class="row">
-        <table class="table table-hover">
-            <thead>
-              <tr>
-                  <td>Identifier</td>
-                  <td>Total data (bytes) </td>
-                  <td>Number of messages</td>
-              </tr>
-            </thead>
-            <tbody data-bind="foreach: metadataData">
-              <tr class="tenant expanded">
-                <td data-bind="text: name"></td>
-                <td data-bind="text: total"></td>
-                <td data-bind="text: number"></td>
-              </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <hr>
-</div> <!-- /container -->
-
-<div class="panel panel-default tenantContainer">
-  <div class="panel-heading">
-    <button class="btn btn-default" data-bind="click: addTenant">
-      <span class="glyphicon glyphicon-plus"></span>
-    </button>
-    Tenants info
-    <button data-bind="click: saveTenant">save</button>
-  </div>
-  <div class="panel-data">
-    <div class="tenantContainer" data-bind="foreach: tenantsData">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <button class="btn btn-default" data-bind="click: function(d, e) { $root.removeTenant($index()) }">
-            <span class="red glyphicon glyphicon-remove"></span>
-          </button>
-          <span>
-            Tenant <span data-bind="text: $index"></span>
-          </span>
-        </div>
-        <div class="panel-body">
-          <div class="input-group">
-            <span class="input-group-addon" id="input-id">id</span>
-            <input type="text" class="form-control" placeholder="id" data-bind="textInput: id" aria-describedby="input-id">
-          </div>
-
-          <div class="input-group">
-            <span class="input-group-addon" id="input-name">name</span>
-            <input type="text" class="form-control" placeholder="name" data-bind="textInput: name" aria-describedby="input-name">
-          </div>
-
-          <div class="input-group">
-            <span class="input-group-addon" id="input-key">key</span>
-            <input type="text" class="form-control" placeholder="key" data-bind="textInput: key" aria-describedby="input-key">
-          </div>
-
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              Enterprise Data Hub information
+        <link href="libraries/bootstrap.css" rel="stylesheet" />
+        <link href="style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <header>
+            <div class="container">
+                <img src="images/logo.png" title="Entrust | Metadata Server" />
+                <ul class="nav nav-pills pull-right">
+                  <li role="presentation" class="active"><a href="index.html">Tenant Management</a></li>
+                  <li role="presentation"><a href="server-activity.html">Server Activity</a></li>
+                </ul>
             </div>
-            <div class="panel-data tenantContainer" data-bind="with: edh">
-              <div class="input-group">
-                <span class="input-group-addon" id="input-protocol">protocol</span>
-                <input type="text" class="form-control" placeholder="protocol" data-bind="textInput: protocol" aria-describedby="input-protocol">
-              </div>
+        </header>
+        <section>
+            <div class="container">
+                <h1>Tenant Management</h1>
+                <table class="table" cellspacing="0" cellborder="0" border="0">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Name</th>
+                            <th>Key</th>
+                            <th>Protocol</th>
+                            <th>Hostname</th>
+                            <th>Port</th>
+                            <th>Method</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="level1">
+                            <td class="table-status">
+                                <div class="status" title="Offline"></div>
+                                <label for="tenant1-status">Status</label>
+                            </td>
+                            <td class="table-name">
+                                <label for="tenant1-name">Name</label>
+                                <input type="text" id="tenant1-name" placeholder="Tenant Name" value="PointZero" />
+                            </td>
+                            <td>
+                                <label for="tenant1-key">Key</label>
+                                <input type="text" id="tenant1-key" placeholder="Tenant Key" value="21XR2385-5S4863" />
+                            </td>
+                            <td>
+                                <label for="tenant1-protocol">Protocol</label>
+                                <div class="select">
+                                    <select id="tenant1-protocol">
+                                        <option>HTTP</option>
+                                        <option>HTTPS</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <label for="tenant1-hostname">Hostname</label>
+                                <input type="text" id="tenant1-hostname" placeholder="Tenant Hostname" value="" />
+                            </td>
+                            <td>
+                                <label for="tenant1-port">Port</label>
+                                <input type="text" id="tenant1-port" placeholder="Tenant Port" value="" />
+                            </td>
+                            <td>
+                                <label for="tenant1-method">Method</label>
+                                <div class="select">
+                                    <select id="tenant1-method">
+                                        <option>GET</option>
+                                        <option>POST</option>
+                                        <option>PUT</option>
+                                        <option>DELETE</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td class="table-action">
+                                <button title="Save" type="button" class="btn">
+                                    <i class="glyphicon glyphicon-floppy-disk"></i>
+                                </button>
+                                <button title="Delete" type="button" class="btn">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="level1">
+                            <td class="table-status">
+                                <div class="status" title="Online"></div>
+                                <label for="tenant2-status">Status</label>
+                            </td>
+                            <td class="table-name">
+                                <label for="tenant2-name">Name</label>
+                                <input type="text" id="tenant2-name" placeholder="Tenant Name" value="Kingston1" />
+                            </td>
+                            <td>
+                                <label for="tenant2-key">Key</label>
+                                <input type="text" id="tenant2-key" placeholder="Tenant Key" value="23XB2855-3S9875" />
+                            </td>
+                            <td>
+                                <label for="tenant2-protocol">Protocol</label>
+                                <div class="select">
+                                    <select id="tenant2-protocol">
+                                        <option>HTTP</option>
+                                        <option>HTTPS</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td>
+                                <label for="tenant2-hostname">Hostname</label>
+                                <input type="text" id="tenant2-hostname" placeholder="Tenant Hostname" value="" />
+                            </td>
+                            <td>
+                                <label for="tenant2-port">Port</label>
+                                <input type="text" id="tenant2-port" placeholder="Tenant Port" value="" />
 
-              <div class="input-group">
-                <span class="input-group-addon" id="input-hostname">hostname</span>
-                <input type="text" class="form-control" placeholder="hostname" data-bind="textInput: hostname" aria-describedby="input-hostname">
-              </div>
-
-              <div class="input-group">
-                <span class="input-group-addon" id="input-port">port</span>
-                <input type="text" class="form-control" placeholder="port" data-bind="textInput: port" aria-describedby="input-port">
-              </div>
-
-              <div class="input-group">
-                <span class="input-group-addon" id="input-method">method</span>
-                <input type="text" class="form-control" placeholder="method" data-bind="textInput: method" aria-describedby="input-method">
-              </div>
+                            </td>
+                            <td>
+                                <label for="tenant2-method">Method</label>
+                                <div class="select">
+                                    <select id="tenant2-method">
+                                        <option>GET</option>
+                                        <option>POST</option>
+                                        <option>PUT</option>
+                                        <option>DELETE</option>
+                                    </select>
+                                </div>
+                            </td>
+                            <td class="table-action">
+                                <button title="Save" type="button" class="btn">
+                                    <i class="glyphicon glyphicon-floppy-disk"></i>
+                                </button>
+                                <button title="Delete" type="button" class="btn">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<footer>
-    <p>&copy; 2015 Entrust</p>
-</footer>
-</body>
+        </section>
+        <footer>
+            <div class="container">
+                © Entrust®, Inc. All rights reserved. Entrust - Three Lincoln Centre - 5430 LBJ Freeway, Suite 1250 - Dallas, Texas 75240, USA
+            </div>
+        </footer>
+    </body>
 </html>

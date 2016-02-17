@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Entrust metadata server</title>
+
+    <!-- Bootstrap -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="index.css">
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/lodash/dist/lodash.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/knockout/dist/knockout.js"></script>
+    <script src="index.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Entrust Metadata server</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+
+        </div><!--/.navbar-collapse -->
+    </div>
+</nav>
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>Metadata Details</h1>
+        <p>This is the data that is currently stored in your metadata server.</p>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Example row of columns -->
+    <div class="row">
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                  <td>Identifier</td>
+                  <td>Total data (bytes) </td>
+                  <td>Number of messages</td>
+              </tr>
+            </thead>
+            <tbody data-bind="foreach: metadataData">
+              <tr class="tenant expanded">
+                <td data-bind="text: name"></td>
+                <td data-bind="text: total"></td>
+                <td data-bind="text: number"></td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+</div> <!-- /container -->
+
+<div class="panel panel-default tenantContainer">
+  <div class="panel-heading">
+    <button class="btn btn-default" data-bind="click: addTenant">
+      <span class="glyphicon glyphicon-plus"></span>
+    </button>
+    Tenants info
+    <button data-bind="click: saveTenant">save</button>
+  </div>
+  <div class="panel-data">
+    <div class="tenantContainer" data-bind="foreach: tenantsData">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <button class="btn btn-default" data-bind="click: function(d, e) { $root.removeTenant($index()) }">
+            <span class="red glyphicon glyphicon-remove"></span>
+          </button>
+          <span>
+            Tenant <span data-bind="text: $index"></span>
+          </span>
+        </div>
+        <div class="panel-body">
+          <div class="input-group">
+            <span class="input-group-addon" id="input-id">id</span>
+            <input type="text" class="form-control" placeholder="id" data-bind="textInput: id" aria-describedby="input-id">
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon" id="input-name">name</span>
+            <input type="text" class="form-control" placeholder="name" data-bind="textInput: name" aria-describedby="input-name">
+          </div>
+
+          <div class="input-group">
+            <span class="input-group-addon" id="input-key">key</span>
+            <input type="text" class="form-control" placeholder="key" data-bind="textInput: key" aria-describedby="input-key">
+          </div>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              Enterprise Data Hub information
+            </div>
+            <div class="panel-data tenantContainer" data-bind="with: edh">
+              <div class="input-group">
+                <span class="input-group-addon" id="input-protocol">protocol</span>
+                <input type="text" class="form-control" placeholder="protocol" data-bind="textInput: protocol" aria-describedby="input-protocol">
+              </div>
+
+              <div class="input-group">
+                <span class="input-group-addon" id="input-hostname">hostname</span>
+                <input type="text" class="form-control" placeholder="hostname" data-bind="textInput: hostname" aria-describedby="input-hostname">
+              </div>
+
+              <div class="input-group">
+                <span class="input-group-addon" id="input-port">port</span>
+                <input type="text" class="form-control" placeholder="port" data-bind="textInput: port" aria-describedby="input-port">
+              </div>
+
+              <div class="input-group">
+                <span class="input-group-addon" id="input-method">method</span>
+                <input type="text" class="form-control" placeholder="method" data-bind="textInput: method" aria-describedby="input-method">
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer>
+    <p>&copy; 2015 Entrust</p>
+</footer>
+</body>
+</html>

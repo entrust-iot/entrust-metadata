@@ -1,0 +1,351 @@
+/*  
+    ============================================
+    TABLE OF CONTENTS
+    ============================================
+    Variables
+    Elements
+    Header
+    Tables
+    Forms
+    Status Module
+
+/*  Variables
+    -------------------------------------------- */
+/*
+    Colors
+    ------
+        $grey-light:    #f0f0f0;
+        $grey:          #bfbfbf;
+
+        $blue-light:    #cee1ef;
+        $blue:          #3b88be;
+        $blue-dark:     #17537c;
+
+        $green:         #39c023;
+
+        $red:           #fd5c49;
+
+        $entrust-dark-grey:     #4b4b4b;
+        $entrust-light-grey:    #8d8d8d;
+
+
+    Fonts
+    -----
+        24pt
+        14pt
+        12pt
+*/
+
+
+/*  Elements
+    -------------------------------------------- */
+    html,
+    body {
+        background-color: transparent;
+    }
+
+    body {
+        font-size: 10pt;
+    }
+
+    body:before {
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#f0f0f0+0,ffffff+100 */
+        background: #f0f0f0; /* Old browsers */
+        background: -moz-linear-gradient(top,  #f0f0f0 0%, #ffffff 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top,  #f0f0f0 0%,#ffffff 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom,  #f0f0f0 0%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f0f0', endColorstr='#ffffff',GradientType=1 ); /* IE6-9 */
+
+        content: " ";
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        z-index: -1;
+
+    }
+
+    h1 {
+        border-bottom: 4px solid #17537c;
+        color: #17537c;
+        font-size: 24pt;
+        font-weight: bold;
+        margin-bottom: 2px;
+    }
+
+
+/*  Header
+    -------------------------------------------- */
+    header {
+        background-color: black;
+        font-size: 14pt;
+    }
+
+    header .nav,
+    header .nav a {
+        min-height: 49px;
+    }
+
+    header .nav a {
+        line-height: 49px;
+    }
+
+    header .nav-pills > li > a {
+        border-radius: 0;
+        color: white;
+        padding-bottom: 0;
+        padding-top: 0;
+    }
+
+    header .nav-pills > li > a:hover,
+    header .nav-pills > li.active > a,
+    header .nav-pills > li.active > a:focus {
+        background-color: white !important;
+        color: #17537c !important;
+    }
+
+/*  Section
+    -------------------------------------------- */
+
+    section {
+        bottom: 39px;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 49px;
+    }
+
+    section .container {
+        background-color: white;
+        min-height: 100%;
+    }
+
+
+/*  Footer
+    -------------------------------------------- */
+    footer {
+        background-color: #4b4b4b;
+        bottom: 0;
+        color: #8d8d8d;
+        height: 39px;
+        line-height: 39px;
+        left: 0;
+        position: fixed;
+        right: 0;
+    }
+
+/*  Buttons
+    -------------------------------------------- */
+    .btn {
+        background-color: transparent;
+        color: #17537c;
+    }
+
+
+/*  Tables
+    -------------------------------------------- */
+
+    .table a {
+        line-height: 25px;
+    }
+
+    .table > thead > tr > th {
+        background-color: #17537c;
+        border: 0;
+        color: white;
+    }
+
+    .table tr.level1.active {
+        background-color: #3b88be;
+    }
+
+    .table tr.level1.active td {
+        background-color: transparent;
+        color: white;
+    }
+
+    .table tr.level1.active td a {
+        color: white;
+    }
+
+    .table tr.level2 {
+        background-color: #cee1ef;
+    }
+
+    .table tr.level3 {
+        background-color: #f0f0f0;
+    }
+
+    @media screen and (min-width: 1201px) {
+        .table > tbody > tr > td {
+            border-top: 0;
+            border-bottom: 1px solid #bfbfbf;
+        }
+
+        .table td label {
+            display: none;
+        }
+
+        .table .status {
+            margin: 4px auto;
+        }
+    }
+
+    @media screen and (max-width: 1200px) {
+        .table tr {
+            position: relative;
+        }
+
+        .table th {
+            display: none;
+        }
+
+        .table > tbody > tr > td {
+            border-top: 1px solid #bfbfbf;
+        }
+
+        .table tr {
+            float: left;
+            width: 100%;
+        }
+
+        .table td {
+            float: left;
+            padding-left: 25% !important;
+            width: 50%;
+        }
+
+        .table tr.level1 td.table-status,
+        .table tr.level1 td.table-name {
+            border-top: 4px solid #17537c;
+            padding-left: 0 !important;
+        }
+
+        .table td.table-status {
+            padding-left: 8px !important;
+            width: 25%;
+        }
+
+        .table td.table-name {
+            width: 75%;
+        }
+
+        .table td label {
+            display: block;
+        }
+
+        .table td .status + label {
+            display: inline-block;
+        }
+
+        .table td.action {
+            position: absolute;
+            right: 0;
+            top: 0;
+        }
+
+        .table .status {
+            float: left;
+            margin-right: 5px;
+        }
+    }
+
+    @media screen and (max-width: 500px) {
+        .table td {
+            width: 100%;
+        }
+
+        .table td.table-status label {
+            display: none;
+        }
+    }
+
+
+/*  Forms
+    -------------------------------------------- */
+    
+    .value,
+    .select select,
+    input[type="text"],
+    input[type="password"] {
+        height: 25px;
+        line-height: 25px;
+    }
+
+    .select select,
+    input[type="text"],
+    input[type="password"] {
+        border: 1px solid #bfbfbf;
+        padding: 0px 5px;
+        width: 130px;
+    }
+
+    .select {
+        position: relative;
+        width: 130px;
+    }
+
+    @media screen and (max-width: 1200px) {
+
+        .select select,
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+        }
+    }
+
+    .select:before,
+    .select:after {
+        content: " ";
+        position: absolute;
+    }
+
+    .select:before {
+        background-color: white;
+        bottom: 2px;
+        right: 1px;
+        top: 2px;
+        width: 30px;
+        z-index: 2;
+    }
+    .select:after {
+        border-top: 5px solid #bfbfbf;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        right: 5px;
+        top: 10px;
+        z-index: 2;
+    }
+
+
+/*  Status Module
+    -------------------------------------------- */
+    .status {
+        background-color: white;
+        border: 1px solid #bfbfbf;
+        border-radius: 50%;
+        height: 20px;
+        overflow: hidden;
+        position: relative;
+        width: 20px;
+    }
+
+    .status[title="Offline"]:before,
+    .status[title="Online"]:before {
+        border-radius: 50%;
+        bottom: 2px;
+        content: " ";
+        left: 2px;
+        position: absolute;
+        right: 2px;
+        top: 2px;
+    }
+
+    .status[title="Offline"]:before {
+        background-color: #fd5c49;
+    }
+
+    .status[title="Online"]:before {
+        background-color: #39c023;
+    }
