@@ -1,16 +1,59 @@
 $(function() {
   function MainVM(tenantServerBinding) {
     var self = this;
-    self.tenantsData = ko.computed(function() {
-      return tenantServerBinding.tenantsData();
-    });
-
+    self.tenantsData = ko.observableArray();
     self.metadataData = ko.observableArray();
     self.deviceMapping = ko.observableArray();
 
     self.addTenant = addTenant;
     self.removeTenant = removeTenant;
     self.saveTenant = saveTenant;
+    self.isTenantDirty = isTenantDirty;
+
+    function TenantUIModel(obj) {
+      var self = this;
+
+      _.assign(self, obj);
+
+      self.id = ko.observable(self.id);
+      self.name = ko.observable(self.name);
+      self.key = ko.observable(self.key);
+      self.edh.protocol = ko.observable(self.edh.protocol);
+      self.edh.hostname = ko.observable(self.edh.hostname);
+      self.edh.port = ko.observable(self.edh.port);
+      self.edh.method = ko.observable(self.edh.method);
+
+      self.edh.protocols = ko.observableArray(['http', 'https']);
+      self.edh.methods = ko.observableArray(['GET', 'POST', 'PUT', 'DELETE']);
+
+      self.dirty = ko.observable(false);
+      self.isDirty = ko.computed(function() {
+        self.id();
+        self.name();
+        self.key();
+        self.edh.protocol();
+        self.edh.hostname();
+        self.edh.port();
+        self.edh.method();
+
+        self.dirty(true);
+      });
+      self.dirty(false);
+
+      self.toServerModel = function() {
+        return {
+          "id": self.id(),
+          "name": self.name(),
+          "edh": {
+            "protocol": self.edh.protocol(),
+            "hostname": self.edh.hostname(),
+            "port": self.edh.port(),
+            "method": self.edh.method()
+          },
+          "key": self.key()
+        };
+      };
+    }
 
     function addTenant() {
       self.tenantsData.push({
@@ -25,14 +68,21 @@ $(function() {
         "key": ""
       });
     }
-     
+
     function removeTenant(index) {
       tenantServerBinding.remove(index);
     }
 
     function saveTenant(index){
+      var t = self.tenantsData()[index];
+      tenantServerBinding.save(index, t.toServerModel());
+      t.dirty(false);
     }
 
+    function isTenantDirty(obj, index) {
+      console.log(obj, index);
+      return _.isEqual(obj, tenantServerBinding.tenants()[index]);
+    };
 
     function addOrUpdate(koArr, value, criteria) {
       var index = _.indexOf(koArr(), _.find(koArr(), criteria));
@@ -76,6 +126,16 @@ $(function() {
 
     function init() {
       setInterval(updateMetadataInfo, 1000);
+
+      tenantServerBinding.tenants.subscribe(function(nV) {
+        _(nV)
+         .map('value')
+         .each(function(tenantObject) {
+          if (tenantObject) {
+            self.tenantsData.push(new TenantUIModel(_.cloneDeep(tenantObject)));
+          }
+       });
+      }, null, 'arrayChange');
     }
 
     init();
@@ -86,17 +146,24 @@ $(function() {
   function TenantServerBinding() {
     var self = this;
 
-    self.tenantsData = ko.observableArray();
+    self.tenants = ko.observableArray();
+    self.remove = remove;
+    self.save = save;
 
     function remove(index) {
-      self.tenantsData.splice(index, 1);
+      self.tenants.splice(index, 1);
+      saveTenantsToServer();
+    }
+
+    function save(i, obj) {
+      self.tenants()[i] = obj;
       saveTenantsToServer();
     }
 
     function getTenants() {
       $.getJSON('/tenants', function(data) {
         _.each(data, function (v) {
-          self.tenantsData.push(v);
+          self.tenants.push(v);
         });
       });
     }
@@ -105,7 +172,7 @@ $(function() {
       var options = {
         url: '/tenants',
         type: 'POST',
-        data: JSON.stringify(self.tenantsData()),
+        data: JSON.stringify(self.tenants()),
         contentType: 'application/json; charset=utf-8',
         dataType: 'json',
         success: function() {

@@ -45,6 +45,7 @@
                             <td class="table-status">
                                 <div class="status" title="Offline"></div>
                                 <label for="tenant1-status">Status</label>
+                                <span data-bind="text: dirty"></span>
                             </td>
                             <td class="table-name">
                                 <label for="tenant1-name">Name</label>
@@ -58,9 +59,7 @@
                             <td>
                                 <label for="tenant1-protocol">Protocol</label>
                                 <div class="select">
-                                    <select id="tenant1-protocol">
-                                        <option>HTTP</option>
-                                        <option>HTTPS</option>
+                                    <select id="tenant1-protocol" data-bind="options: protocols, value: protocol">
                                     </select>
                                 </div>
                             </td>
@@ -75,17 +74,13 @@
                             <td>
                                 <label for="tenant1-method">Method</label>
                                 <div class="select">
-                                    <select id="tenant1-method">
-                                        <option>GET</option>
-                                        <option>POST</option>
-                                        <option>PUT</option>
-                                        <option>DELETE</option>
+                                    <select id="tenant1-method" data-bind="options: methods, value: method">
                                     </select>
                                 </div>
                             </td>
                             <!-- /ko -->
                             <td class="table-action">
-                                <button title="Save" type="button" class="btn" data-bind="click: function(d, e) { $root.saveTenant($index()) }">
+                                <button title="Save" type="button" class="btn" data-bind="click: function(d, e) { $root.saveTenant($index()) }, enable: dirty">
                                     <i class="glyphicon glyphicon-floppy-disk"></i>
                                 </button>
                                 <button title="Delete" type="button" class="btn" data-bind="click: function(d, e) { $root.removeTenant($index()) }">
