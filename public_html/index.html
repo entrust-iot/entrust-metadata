@@ -6,7 +6,13 @@
 
 
         <link href="libraries/bootstrap.css" rel="stylesheet" />
+        <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="style.css" rel="stylesheet" />
+
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/lodash/dist/lodash.min.js"></script>
+        <script src="bower_components/knockout/dist/knockout.js"></script>
+        <script src="index.js"></script>
     </head>
     <body>
         <header>
@@ -34,7 +40,7 @@
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody data-bind="foreach: tenantsData">
                         <tr class="level1">
                             <td class="table-status">
                                 <div class="status" title="Offline"></div>
@@ -42,12 +48,13 @@
                             </td>
                             <td class="table-name">
                                 <label for="tenant1-name">Name</label>
-                                <input type="text" id="tenant1-name" placeholder="Tenant Name" value="PointZero" />
+                                <input type="text" id="tenant1-name" placeholder="Tenant Name" data-bind="textInput: name" />
                             </td>
                             <td>
                                 <label for="tenant1-key">Key</label>
-                                <input type="text" id="tenant1-key" placeholder="Tenant Key" value="21XR2385-5S4863" />
+                                <input type="text" id="tenant1-key" placeholder="Tenant Key" data-bind="textInput: key" />
                             </td>
+                            <!-- ko with: edh -->
                             <td>
                                 <label for="tenant1-protocol">Protocol</label>
                                 <div class="select">
@@ -59,11 +66,11 @@
                             </td>
                             <td>
                                 <label for="tenant1-hostname">Hostname</label>
-                                <input type="text" id="tenant1-hostname" placeholder="Tenant Hostname" value="" />
+                                <input type="text" id="tenant1-hostname" placeholder="Tenant Hostname" data-bind="textInput: hostname" />
                             </td>
                             <td>
                                 <label for="tenant1-port">Port</label>
-                                <input type="text" id="tenant1-port" placeholder="Tenant Port" value="" />
+                                <input type="text" id="tenant1-port" placeholder="Tenant Port" data-bind="textInput: port" />
                             </td>
                             <td>
                                 <label for="tenant1-method">Method</label>
@@ -76,62 +83,12 @@
                                     </select>
                                 </div>
                             </td>
+                            <!-- /ko -->
                             <td class="table-action">
-                                <button title="Save" type="button" class="btn">
+                                <button title="Save" type="button" class="btn" data-bind="click: function(d, e) { $root.saveTenant($index()) }">
                                     <i class="glyphicon glyphicon-floppy-disk"></i>
                                 </button>
-                                <button title="Delete" type="button" class="btn">
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr class="level1">
-                            <td class="table-status">
-                                <div class="status" title="Online"></div>
-                                <label for="tenant2-status">Status</label>
-                            </td>
-                            <td class="table-name">
-                                <label for="tenant2-name">Name</label>
-                                <input type="text" id="tenant2-name" placeholder="Tenant Name" value="Kingston1" />
-                            </td>
-                            <td>
-                                <label for="tenant2-key">Key</label>
-                                <input type="text" id="tenant2-key" placeholder="Tenant Key" value="23XB2855-3S9875" />
-                            </td>
-                            <td>
-                                <label for="tenant2-protocol">Protocol</label>
-                                <div class="select">
-                                    <select id="tenant2-protocol">
-                                        <option>HTTP</option>
-                                        <option>HTTPS</option>
-                                    </select>
-                                </div>
-                            </td>
-                            <td>
-                                <label for="tenant2-hostname">Hostname</label>
-                                <input type="text" id="tenant2-hostname" placeholder="Tenant Hostname" value="" />
-                            </td>
-                            <td>
-                                <label for="tenant2-port">Port</label>
-                                <input type="text" id="tenant2-port" placeholder="Tenant Port" value="" />
-
-                            </td>
-                            <td>
-                                <label for="tenant2-method">Method</label>
-                                <div class="select">
-                                    <select id="tenant2-method">
-                                        <option>GET</option>
-                                        <option>POST</option>
-                                        <option>PUT</option>
-                                        <option>DELETE</option>
-                                    </select>
-                                </div>
-                            </td>
-                            <td class="table-action">
-                                <button title="Save" type="button" class="btn">
-                                    <i class="glyphicon glyphicon-floppy-disk"></i>
-                                </button>
-                                <button title="Delete" type="button" class="btn">
+                                <button title="Delete" type="button" class="btn" data-bind="click: function(d, e) { $root.removeTenant($index()) }">
                                     <i class="glyphicon glyphicon-trash"></i>
                                 </button>
                             </td>
