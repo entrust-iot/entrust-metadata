@@ -1,5 +1,5 @@
-var express = require("express");
 var bodyParser = require("body-parser");
+var express = require("express");
 var tenants = require("./libs/tenants");
 var devices = require("./libs/devices");
 var metadata = require("./libs/metadata");
@@ -28,15 +28,19 @@ app.get("/status", function (req, res) {
     res.send(genericResp);
 });
 
-//GET on /init will return a unique id and tenant id
-app.get("/init/:apikey/:uniqueid/:agentId?/:edgeId?", function (req, res) {
+//POST on /init will return a unique id and tenant id
+app.post("/init", function (req, res) {
     console.log("Device is requesting a tenant id and device id");
+    var inData = req.body;
     var data = {};
-    data.tenant = tenants.findTenantByKey(req.params.apikey).id;
-    var device = devices.getDeviceByMAC(data.tenant, req.params.uniqueid, req.params.agentId, req.params.edgeId);
+    data.tenant = tenants.findTenantByKey(inData.apiKey).id;
 
+    var device = devices.getDeviceByMAC(data.tenant, inData.mac,
+            inData.agentId, inData.edgeId, inData.certName);
+    if (nameMismatch(inData.certName, device, res)) {
+        return;
+    }
     device.status = 'online';
-
     data.id = device.id;
 
     res.send(JSON.stringify(data));
@@ -104,18 +108,18 @@ app.get("/tenants", function(req, res) {
 });
 
 app.post("/tenants", function(req, res) {
-  var data = req.body
-	console.log("Recieved POST request to add tenant: " + JSON.stringify(data));
+  var data = req.body;
+  console.log("Received POST request to add tenant: " + JSON.stringify(data));
 
   tenants.replaceData(data);
 
-	res.json({"hello":"world"});
+  res.json({"hello":"world"});
 })
 
 
 //POST for the meta data that comes from the service gateway
 app.post("/meta", function(req, res) {
-    console.log("Recevied POST request to add metadata");
+    console.log("Received POST request to add metadata");
     var body = req.body;
     if (body.topic.substr(0,1) === "/") {
         body.topic = body.topic.substr(1);
@@ -137,24 +141,29 @@ app.post("/meta", function(req, res) {
         return;
     }
 
-    metadata.addRow({
-        "type" : body.cmd,
-        "length": body.length,
-        "topic": body.topic,
-        "tenant": tenant,
-        "deviceId": deviceId,
-        "sensorId": sensorId
-    });
+    // Check cert name
+    if (nameMismatch(body.certName, device, res)) {
+        return;
+    } else {
+        metadata.addRow({
+            "type" : body.cmd,
+            "length": body.length,
+            "topic": body.topic,
+            "tenant": tenant,
+            "deviceId": deviceId,
+            "sensorId": sensorId
+        });
 
-    var sendData = {
-        "tenant_data": tenantId ? tenantId.edh : "",
-        "timestamp": (new Date()).getTime()
-    };
+        var sendData = {
+            "tenant_data": tenantId ? tenantId.edh : "",
+            "timestamp": (new Date()).getTime()
+        };
 
-    console.log("Sending meta response");
-    console.log(sendData);
+        console.log("Sending meta response");
+        console.log(sendData);
 
-    res.json(sendData);
+        res.json(sendData);
+    }
 });
 
 //Add a static server for files under the public_html folder
@@ -168,3 +177,13 @@ var server = app.listen(appPort, function () {
 
   console.log("Entrust metadata running");
 });
+
+function nameMismatch(certName, device, res) {
+console.log('nameMismatch', certName, device.name)
+    if (certName !== device.name) {
+        device.status = 'untrusted';
+        res.status(403).send("Certificate name mismatch").end();
+        return true;
+    }
+    return false;
+}

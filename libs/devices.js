@@ -19,11 +19,11 @@ var DevicesCollection = function() {
   self.getDeviceById = getDeviceById;
   self.getDevicesByEdgeId = getDevicesByEdgeId;
 
-  function getDeviceByMAC(tenantId, mac, agentId, edgeId) {
+  function getDeviceByMAC(tenantId, mac, agentId, edgeId, name) {
     var device = _.find(data, { macAddr: mac });
 
     if (!device) {
-      device = new Device(tenantId, mac, agentId, edgeId);
+      device = new Device(tenantId, mac, name);
       data.push(device);
     }
 
@@ -55,14 +55,13 @@ var DevicesCollection = function() {
     return _.filter(data, {edgeId: edgeId});
   }
 
-  function Device(t, m, i, e) {
+  function Device(t, m, n) {
     var self = this;
 
     self.macAddr = m;
     self.tenant = t;
     self.id = uniqueId();
-    self.agentId = i;
-    self.edgeId = e;
+    self.name = n;
     self.status = 'online';
   }
 };
