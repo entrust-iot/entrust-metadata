@@ -13,6 +13,20 @@ $(function() {
     function TenantUIModel(obj) {
       var self = this;
 
+      if (!obj) {
+        obj = {
+          "id": "",
+          "name": "",
+          "edh": {
+            "protocol": "",
+            "hostname": "",
+            "port": "",
+            "method": ""
+          },
+          "key": ""
+        };
+      }
+
       _.assign(self, obj);
 
       self.id = ko.observable(self.id);
@@ -56,17 +70,7 @@ $(function() {
     }
 
     function addTenant() {
-      self.tenantsData.push({
-        "id": "",
-        "name": "",
-        "edh": {
-          "protocol": "",
-          "hostname": "",
-          "port": "",
-          "method": ""
-        },
-        "key": ""
-      });
+      self.tenantsData.push();
     }
 
     function removeTenant(index) {
@@ -74,6 +78,10 @@ $(function() {
     }
 
     function saveTenant(index){
+      if ((index + 1) === self.tenantsData().length) {
+        self.tenantsData.push(new TenantUIModel());
+      }
+
       var t = self.tenantsData()[index];
       tenantServerBinding.save(index, t.toServerModel());
       t.dirty(false);
@@ -128,14 +136,13 @@ $(function() {
       setInterval(updateMetadataInfo, 1000);
 
       tenantServerBinding.tenants.subscribe(function(nV) {
-        _(nV)
-         .map('value')
-         .each(function(tenantObject) {
-          if (tenantObject) {
-            self.tenantsData.push(new TenantUIModel(_.cloneDeep(tenantObject)));
-          }
-       });
-      }, null, 'arrayChange');
+        self.tenantsData(_.map(nV, function(tenantObject) {
+          return new TenantUIModel(_.cloneDeep(tenantObject));
+        }));
+
+        var empty = new TenantUIModel();
+        self.tenantsData.push(empty);
+      });
     }
 
     init();
