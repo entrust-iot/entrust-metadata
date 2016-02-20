@@ -3,10 +3,14 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-
         <link href="libraries/bootstrap.css" rel="stylesheet" />
         <link href="style.css" rel="stylesheet" />
+
+        <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="bower_components/lodash/dist/lodash.min.js"></script>
+        <script src="bower_components/knockout/dist/knockout.js"></script>
+        <script src="server-activity.js"></script>
+
     </head>
     <body>
         <header>
@@ -32,138 +36,89 @@
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr class="level1">
-                            <td class="table-status">
-                                <div class="status" title="Offline"></div>
-                                <label for="tenant1-status">Status</label>
-                            </td>
-                            <td class="table-name">
-                                <label for="tenant1-name">Name</label>
-                                <span class="value" id="tenant1-name">PointZero</span>
-                            </td>
-                            <td>
-                                <label for="tenant1-total-data">Total Data(bytes)</label>
-                                <span class="value" id="tenant1-total-data">5,662</span>
-                            </td>
-                            <td>
-                                <label for="tenant1-number-of-messages">Number of Messages</label>
-                                <span class="value" id="tenant1-number-of-messages">45</span>
-                                
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <a class="pull-right" href="#">view devices (1)</a>
-                            </td>
-                            
-                        </tr>
+                    <tbody data-bind="foreach: {data: data, as: 'tenant'}">
                         <tr class="level1 active">
                             <td class="table-status">
-                                <div class="status" title="Online"></div>
+                                <div class="status" data-bind="attr: { title: tenant.allOnline() ? 'Online' : 'Offline' }"></div>
                                 <label for="tenant2-status">Status</label>
                             </td>
                             <td class="table-name">
                                 <label for="tenant2-name">Name</label>
-                                <span class="value" id="tenant2-name">Kingston1</span>
+                                <span class="value" id="tenant2-name" data-bind="text: tenant.tenantName"></span>
                             </td>
                             <td>
                                 <label for="tenant2-total-data">Total Data(bytes)</label>
-                                <span class="value" id="tenant2-total-data">12,452</span>
+                                <span class="value" id="tenant2-total-data" data-bind="text: tenant.dataSize"></span>
                             </td>
                             <td>
                                 <label for="tenant2-number-of-messages">Number of Messages</label>
-                                <span class="value" id="tenant2-number-of-messages">122</span>
-                                
+                                <span class="value" id="tenant2-number-of-messages" data-bind="text: tenant.messageCount"></span>
+
                             </td>
                             <td>&nbsp;</td>
                             <td>
-                                <a class="pull-right" href="#">hide devices (2)</a>
-                            </td>                            
-                        </tr>
-                        <tr class="level2">
-                            <td class="table-status">
-                                <div class="status" title="Online"></div>
-                                <label for="tenant2--device1-status">Status</label>
-                            </td>
-                            <td class="table-name">
-                                <label for="tenant2--device1-name">Name</label>
-                                <span class="value" id="tenant2--device1-name">Device 1</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device1-total-data">Total Data(bytes)</label>
-                                <span class="value" id="tenant2--device1-total-data">6,452</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device1-number-of-messages">Number of Messages</label>
-                                <span class="value" id="tenant2--device1-number-of-messages">72</span>
-                                
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <a class="pull-right" href="#">view sensors (2)</a>
+                                <a class="pull-right" href="#" data-bind="click: tenant.toggleShowDevice">
+                                  <span data-bind="text: tenant.showDevices() ? 'hide' : 'show'"></span>
+                                   devices 
+                                  (<span data-bind="text: tenant.devices().length"></span>)
+                                </a>
                             </td>
                         </tr>
-                        <tr class="level2">
-                            <td class="table-status">
-                                <div class="status" title="Online"></div>
-                                <label for="tenant2--device2-status">Status</label>
-                            </td>
-                            <td class="table-name">
-                                <label for="tenant2--device2-name">Name</label>
-                                <span class="value" id="tenant2--device2-name">Device 2</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device2-total-data">Total Data(bytes)</label>
-                                <span class="value" id="tenant2--device2-total-data">6,000</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device2-number-of-messages">Number of Messages</label>
-                                <span class="value" id="tenant2--device2-number-of-messages">50</span>
-                                
-                            </td>
-                            <td>&nbsp;</td>
-                            <td>
-                                <a class="pull-right" href="#">hide sensors (2)</a>
-                            </td>
-                        </tr>
-                        <tr class="level3">
-                            <td class="table-status">
-                                &nbsp;
-                            </td>
-                            <td class="table-name">
-                                <label for="tenant2--device2--sensor1-name">Name</label>
-                                <span class="value" id="tenant2--device2--sensor1-name">Sensor 1</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device2--sensor1-total-data">Total Data(bytes)</label>
-                                <span class="value" id="tenant2--device2--sensor1-total-data">3,000</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device2--sensor1-number-of-messages">Number of Messages</label>
-                                <span class="value" id="tenant2--device2--sensor1-number-of-messages">25</span>
-                                
-                            </td>
-                            <td>&nbsp;</td><td>&nbsp;</td>
-                        </tr>
-                        <tr class="level3">
-                            <td class="table-status">
-                                &nbsp;
-                            </td>
-                            <td class="table-name">
-                                <label for="tenant2--device2--sensor2-name">Name</label>
-                                <span class="value" id="tenant2--device2--sensor2-name">Sensor 2</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device2--sensor2-total-data">Total Data(bytes)</label>
-                                <span class="value" id="tenant2--device2--sensor2-total-data">3,000</span>
-                            </td>
-                            <td>
-                                <label for="tenant2--device2--sensor2-number-of-messages">Number of Messages</label>
-                                <span class="value" id="tenant2--device2--sensor2-number-of-messages">25</span>
-                                
-                            </td>
-                            <td>&nbsp;</td><td>&nbsp;</td>
-                        </tr>
+                        <!-- ko if: tenant.showDevices -->
+                          <!-- ko foreach: {data: tenant.devices , as: 'device'} -->
+                          <tr class="level2">
+                              <td class="table-status">
+                                  <div class="status" data-bind="attr: { title: device.online() ? 'Online' : 'Offline' }"></div>
+                                  <label for="tenant2--device1-status">Status</label>
+                              </td>
+                              <td class="table-name">
+                                  <label for="tenant2--device1-name">Name</label>
+                                  <span class="value" id="tenant2--device1-name" data-bind="text: device.deviceName"></span>
+                              </td>
+                              <td>
+                                  <label for="tenant2--device1-total-data">Total Data(bytes)</label>
+                                  <span class="value" id="tenant2--device1-total-data" data-bind="text: device.dataSize"></span>
+                              </td>
+                              <td>
+                                  <label for="tenant2--device1-number-of-messages">Number of Messages</label>
+                                  <span class="value" id="tenant2--device1-number-of-messages" data-bind="text: device.messageCount"></span>
+
+                              </td>
+                              <td>&nbsp;</td>
+                              <td>
+                                  <a class="pull-right" href="#" data-bind="click: device.toggleShowSensors">
+                                    <span data-bind="text: device.showSensors() ? 'hide' : 'show'"></span>
+                                    sensors 
+                                    (<span data-bind="text: device.sensors().length"></span>)
+                                  </a>
+                              </td>
+                          </tr>
+
+                            <!-- ko if: device.showSensors -->
+                              <!-- ko foreach: {data: device.sensors, as: 'sensor'} -->
+                              <tr class="level3">
+                                  <td class="table-status">
+                                      &nbsp;
+                                  </td>
+                                  <td class="table-name">
+                                      <label for="tenant2--device2--sensor1-name">Name</label>
+                                      <span class="value" id="tenant2--device2--sensor1-name" data-bind="text: sensor.sensorName"></span>
+                                  </td>
+                                  <td>
+                                      <label for="tenant2--device2--sensor1-total-data">Total Data(bytes)</label>
+                                      <span class="value" id="tenant2--device2--sensor1-total-data" data-bind="text: sensor.dataSize"></span>
+                                  </td>
+                                  <td>
+                                      <label for="tenant2--device2--sensor1-number-of-messages">Number of Messages</label>
+                                      <span class="value" id="tenant2--device2--sensor1-number-of-messages" data-bind="text: sensor.messageCount"></span>
+
+                                  </td>
+                                  <td>&nbsp;</td><td>&nbsp;</td>
+                              </tr>
+                              <!-- /ko -->
+                            <!-- /ko -->
+                          <!-- /ko -->
+                        <!-- /ko -->
                     </tbody>
                 </table>
             </div>

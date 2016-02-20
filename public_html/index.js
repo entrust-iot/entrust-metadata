@@ -2,8 +2,6 @@ $(function() {
   function MainVM(tenantServerBinding) {
     var self = this;
     self.tenantsData = ko.observableArray();
-    self.metadataData = ko.observableArray();
-    self.deviceMapping = ko.observableArray();
 
     self.addTenant = addTenant;
     self.removeTenant = removeTenant;
@@ -102,35 +100,6 @@ $(function() {
       }
     }
 
-    function updateMetadataInfo() {
-      $.getJSON('/metadata', function(metadata) {
-        _.each(metadata, function (v) {
-          addOrUpdate(self.metadataData, v, {name: v.name});
-        });
-
-        _(self.metadataData())
-          .map('name')
-          .each(function(tenantName) {
-            $.getJSON('/metadata/' + tenantName, function(devices) {
-              devices.tenant = tenantName;
-              addOrUpdate(self.deviceMapping, devices, {tenant: devices.tenant});
-
-              console.log(self.deviceMapping());
-
-              _(devices)
-                .map('name')
-                .each(function(deviceName) {
-                  console.log(tenantName, deviceName);
-
-                  $.getJSON('/metadata/' + tenantName + '/' + deviceName, function(sensorsInfo) {
-                    console.log(deviceName, sensorsInfo)
-                    // TODO: Update depending on UI requirement
-                  });
-                });
-            });
-          });
-      });
-    }
 
     function init() {
       setInterval(updateMetadataInfo, 1000);
