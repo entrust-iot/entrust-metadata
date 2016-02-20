@@ -7,6 +7,7 @@ $(function() {
       self.messageCount = ko.observable(123);
       self.dataSize = ko.observable(4000);
       self.showDevices = ko.observable(false);
+      self.isActive = ko.observable(false);
 
       self.devices = ko.observableArray([
         new Device(),
@@ -25,6 +26,14 @@ $(function() {
       self.toggleShowDevice = function() {
         self.showDevices(!self.showDevices());
       };
+
+      self.activate = function() {
+        self.isActive(true);
+
+        timeout(function() {
+          self.isActive(false)
+        }, 1000);
+      }
     };
 
     function Device() {

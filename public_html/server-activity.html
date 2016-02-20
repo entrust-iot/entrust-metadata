@@ -37,7 +37,7 @@
                         </tr>
                     </thead>
                     <tbody data-bind="foreach: {data: data, as: 'tenant'}">
-                        <tr class="level1 active">
+                        <tr class="level1" data-bind="css: {active: tenant.isActive}">
                             <td class="table-status">
                                 <div class="status" data-bind="attr: { title: tenant.allOnline() ? 'Online' : 'Offline' }"></div>
                                 <label for="tenant2-status">Status</label>

@@ -102,8 +102,6 @@ $(function() {
 
 
     function init() {
-      setInterval(updateMetadataInfo, 1000);
-
       tenantServerBinding.tenants.subscribe(function(nV) {
         self.tenantsData(_.map(nV, function(tenantObject) {
           return new TenantUIModel(_.cloneDeep(tenantObject));
