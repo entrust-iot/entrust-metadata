@@ -27,12 +27,18 @@ $(function() {
         self.showDevices(!self.showDevices());
       };
 
+      var timeoutId = undefined;
       self.activate = function() {
         self.isActive(true);
 
-        timeout(function() {
-          self.isActive(false)
-        }, 1000);
+        if (timeoutId) {
+          clearTimeout(timeoutId);
+        }
+
+        timeoutId = setTimeout(function() {
+          self.isActive(false);
+          timeoutId = undefined;
+        }, 500);
       }
     };
 
@@ -69,10 +75,6 @@ $(function() {
       new Tenant(),
       new Tenant()
     ]);
-
-    console.log(self.data());
-
-    self.deviceMapping = ko.observableArray();
 
 //    function updateMetadataInfo() {
 //      $.getJSON('/metadata', function(metadata) {
