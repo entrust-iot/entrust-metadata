@@ -3,19 +3,13 @@ $(function() {
     function Tenant() {
       var self = this;
 
-      self.tenantName = ko.observable("TENANT1");
-      self.messageCount = ko.observable(123);
-      self.dataSize = ko.observable(4000);
+      self.tenantName = ko.observable();
+      self.messageCount = ko.observable();
+      self.dataSize = ko.observable();
       self.showDevices = ko.observable(false);
       self.isActive = ko.observable(false);
 
-      self.devices = ko.observableArray([
-        new Device(),
-        new Device(),
-        new Device(),
-        new Device(),
-        new Device()
-      ]);
+      self.devices = ko.observableArray();
 
       self.allOnline = ko.computed(function() {
         return _.every(self.devices(), function(d) {
@@ -40,78 +34,131 @@ $(function() {
           timeoutId = undefined;
         }, 500);
       }
+
+      self.updateData = function(name, size, number) {
+        if (self.tenantName() !== name || self.dataSize() !== size || self.messageCount() !== number) {
+          self.tenantName(name);
+          self.dataSize(size);
+          self.messageCount(number);
+          self.activate();
+        }
+      }
     };
 
     function Device() {
       var self = this;
 
-      self.deviceName = ko.observable("myDevice");
-      self.messageCount = ko.observable(133);
-      self.dataSize = ko.observable(3000);
+      self.deviceName = ko.observable();
+      self.messageCount = ko.observable();
+      self.dataSize = ko.observable();
       self.showSensors = ko.observable(false);
       self.online = ko.observable(true);
 
-      self.sensors = ko.observableArray([
-        new Sensor(),
-        new Sensor(),
-        new Sensor()
-      ]);
+      self.sensors = ko.observableArray();
 
       self.toggleShowSensors = function() {
         self.showSensors(!self.showSensors());
       };
+
+      self.updateData = function(name, size, number) {
+        self.deviceName(name);
+        self.dataSize(size);
+        self.messageCount(number);
+      }
     };
 
     function Sensor() {
       var self = this;
 
-      self.sensorName= ko.observable("myDevice");
-      self.messageCount = ko.observable(133);
-      self.dataSize = ko.observable(3000);
+      self.sensorName= ko.observable();
+      self.messageCount = ko.observable();
+      self.dataSize = ko.observable();
+
+      self.updateData = function(name, size, number) {
+        self.sensorName(name);
+        self.dataSize(size);
+        self.messageCount(number);
+      }
     };
 
-    self.data = ko.observableArray([
-      new Tenant(),
-      new Tenant(),
-      new Tenant()
-    ]);
+    self.data = ko.observableArray();
 
-//    function updateMetadataInfo() {
-//      $.getJSON('/metadata', function(metadata) {
-//        _.each(metadata, function (v) {
-//          addOrUpdate(self.metadataData, v, {name: v.name});
-//        });
-//
-//        _(self.metadataData())
-//          .map('name')
-//          .each(function(tenantName) {
-//            $.getJSON('/metadata/' + tenantName, function(devices) {
-//              devices.tenant = tenantName;
-//              addOrUpdate(self.deviceMapping, devices, {tenant: devices.tenant});
-//
-//              console.log(self.deviceMapping());
-//
-//              _(devices)
-//                .map('name')
-//                .each(function(deviceName) {
-//                  console.log(tenantName, deviceName);
-//
-//                  $.getJSON('/metadata/' + tenantName + '/' + deviceName, function(sensorsInfo) {
-//                    console.log(deviceName, sensorsInfo)
-//                    // TODO: Update depending on UI requirement
-//                  });
-//                });
-//            });
-//          });
-//      });
-//    }
-//
-//    function init() {
-//      setInterval(updateMetadataInfo, 1000);
-//    }
-//
-//    init();
-//
+    function getTenantByName(name) {
+      return _.find(self.data(), function(t) {
+        return t.tenantName() === name;
+      });
+    }
+
+    function getDeviceByNameInTenant(tenant, name) {
+      return _.find(tenant.devices(), function(d) {
+        return d.deviceName() === name;
+      });
+    }
+
+    function getSensorInDevice(device, name) {
+      return _.find(device.sensors(), function(s) {
+        return s.sensorName() === name;
+      });
+    }
+
+
+
+    function updateMetadataInfo() {
+      $.getJSON('/metadata', function(metadata) {
+        _.each(metadata, function (v) {
+          var t = getTenantByName(v.name);
+
+          if (!t) {
+            t = new Tenant();
+            self.data.push(t);
+          }
+
+          t.updateData(v.name, v.total, v.number);
+        });
+
+        _.each(self.data(), function(t) {
+          $.getJSON('/metadata/' + t.tenantName()).success(function(devices) {
+            _.each(devices, function(device) {
+              var d = getDeviceByNameInTenant(t, device.name);
+
+              if (!d) {
+                d = new Device();
+                t.devices.push(d);
+              }
+
+              d.updateData(device.name, device.total, device.number);
+
+              $.getJSON('/devices/' +  d.deviceName(), function (deviceInfo) {
+                d.online(deviceInfo.status === 'online');
+              });
+
+              $.getJSON('/metadata/' + t.tenantName() + '/' + d.deviceName(), function (sensors) {
+                _.each(sensors, function(sensor) {
+                  var s = getSensorInDevice(d, sensor.name);
+
+                  if (!s) {
+                    s = new Sensor();
+                    d.sensors.push(s);
+                  }
+
+                  s.updateData(sensor.name, sensor.total, sensor.number);
+                });
+              });
+            });
+          });
+        })
+      });
+    }
+
+
+
+
+    function init() {
+      setInterval(updateMetadataInfo, 1000);
+    }
+
+    init();
+
   }
 
   ko.applyBindings(new ServerActivityVM());
